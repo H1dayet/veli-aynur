@@ -261,3 +261,54 @@ footer { background: #071025; color: rgba(217, 188, 126, .75); text-align: cente
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
   .snow { display: none; }
 }
+
+/* ===== RSVP ===== */
+.rsvp {
+  padding: 64px 24px 72px; text-align: center; scroll-margin-top: 12px;
+  background: linear-gradient(90deg, #0d1f42 0 10px, rgba(0, 0, 0, .12) 10px, transparent 22px), url(assets/paper.webp) 0 0 / 360px, var(--ivory);
+}
+.rsvp > * { max-width: 420px; margin-inline: auto; }
+.rsvp-lead { font-style: italic; font-size: 1.2rem; line-height: 1.5; margin: -8px auto 28px; }
+#rsvpForm { display: grid; gap: 20px; text-align: left; }
+#rsvpForm[hidden] { display: none; }
+.field { display: grid; gap: 6px; }
+.field > span, .choice legend { font-weight: 600; font-size: 1.05rem; }
+.field em { font-weight: 400; color: var(--muted); }
+.field input, .field select, .field textarea {
+  width: 100%; font: 16px/1.4 var(--serif); font-size: 1.1rem; color: var(--ink);   /* ≥16px stops iOS zooming in */
+  padding: 12px 14px; border: 1px solid rgba(168, 135, 74, .55); border-radius: 10px; background: rgba(255, 255, 255, .8);
+}
+.field textarea { resize: vertical; min-height: 84px; }
+.field :focus, .choice input:focus-visible + span { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+.choice { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
+.choice legend { margin-bottom: 8px; padding: 0; }
+.choice label { position: relative; cursor: pointer; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice span {
+  display: block; padding: 13px 16px; border: 1px solid rgba(168, 135, 74, .55); border-radius: 999px;
+  background: rgba(255, 255, 255, .8); text-align: center; font-size: 1.1rem; transition: background .2s, color .2s;
+}
+.choice input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--ivory); }
+.if-yes { display: grid; gap: 20px; }
+.if-yes[hidden] { display: none; }
+.if-yes:not([hidden]) { animation: rise .5s var(--ease); }
+@keyframes rise { from { opacity: 0; transform: translateY(-8px); } }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+#rsvpForm .btn { justify-self: center; margin-top: 4px; }
+#rsvpForm .btn:disabled { opacity: .6; }
+.rsvp-msg { min-height: 1.4em; text-align: center; color: #a33a3a; }
+.rsvp-done { padding: 22px 18px; border: 1px solid rgba(168, 135, 74, .5); outline: 1px solid rgba(168, 135, 74, .25); outline-offset: 4px; background: rgba(255, 255, 255, .6); }
+.rsvp-done[hidden] { display: none; }
+.rsvp-thanks { font-size: 1.3rem; font-style: italic; }
+.rsvp-edit { margin-top: 10px; background: none; border: 0; color: var(--gold-deep); font: 1rem var(--serif); text-decoration: underline; cursor: pointer; }
+
+/* Floating reminder, bottom-left (music button is bottom-right); hidden once the form is in view or answered */
+.rsvp-nudge {
+  position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 60;
+  padding: 12px 18px; border-radius: 999px; border: 1px solid var(--gold);
+  background: rgba(10, 23, 48, .82); backdrop-filter: blur(6px); color: var(--ivory);
+  font: 600 .95rem var(--serif); letter-spacing: .04em; text-decoration: none;
+  box-shadow: 0 0 24px rgba(217, 188, 126, .3); animation: breathe 2.8s ease-in-out infinite;
+  transition: opacity .4s, transform .4s var(--ease);
+}
+.rsvp-nudge[hidden] { display: block; opacity: 0; transform: translateY(20px); pointer-events: none; }

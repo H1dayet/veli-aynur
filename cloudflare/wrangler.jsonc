@@ -1,0 +1,11 @@
+{
+  "name": "veli-aynur",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-13",
+  // deploy.sh copies the site into ./site/veli-aynur/ so it is served at huselabs.az/veli-aynur/
+  "assets": { "directory": "./site", "binding": "ASSETS", "html_handling": "auto-trailing-slash" },
+  "routes": [{ "pattern": "huselabs.az/veli-aynur*", "zone_name": "huselabs.az" }],
+  "workers_dev": false,
+  "d1_databases": [{ "binding": "DB", "database_name": "veli-aynur-rsvp", "database_id": "57fa0cc2-38cd-4e49-a3c3-c9daf7b37012" }]
+  // secret ADMIN_PATH (wrangler secret put ADMIN_PATH) = the admin page's address after /veli-aynur/
+}

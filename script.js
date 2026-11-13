@@ -197,3 +197,67 @@ if (C.mapQuery) {
   $('.map').remove();
   $('#directions').remove();
 }
+
+// ---- RSVP ----
+const form = $('#rsvpForm');
+const ifYes = $('.if-yes');
+const msg = $('.rsvp-msg');
+const done = $('.rsvp-done');
+const nudge = $('#rsvpNudge');
+const STORE = 'rsvp-veli-aynur';
+const remembered = () => { try { return JSON.parse(localStorage.getItem(STORE)); } catch { return null; } };
+
+function showDone(r) {
+  $('.rsvp-thanks').textContent = r.attending === 'yes'
+    ? `Спасибо, ${r.name}! Ваш ответ получен — ждём вас 4 декабря.`
+    : `Спасибо, ${r.name}, что сообщили. Нам будет вас не хватать!`;
+  form.hidden = true;
+  done.hidden = false;
+  updateNudge();
+}
+
+form.addEventListener('change', (e) => {
+  if (e.target.name === 'attending') ifYes.hidden = e.target.value !== 'yes';
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const data = new FormData(form);
+  const name = String(data.get('name') || '').trim();
+  if (!name) { msg.textContent = 'Пожалуйста, укажите ваше имя.'; form.elements.name.focus(); return; }
+  if (!data.get('attending')) { msg.textContent = 'Пожалуйста, выберите, сможете ли вы прийти.'; return; }
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+  btn.textContent = 'Отправляем…';
+  msg.textContent = '';
+  try {
+    // urlencoded body = "simple" request, so the GitHub Pages copy can post here without a CORS preflight
+    const res = await fetch(C.rsvpUrl, { method: 'POST', body: new URLSearchParams(data) });
+    if (!res.ok) throw new Error(res.status);
+    const r = { name, attending: data.get('attending') };
+    try { localStorage.setItem(STORE, JSON.stringify(r)); } catch {}
+    showDone(r);
+  } catch {
+    msg.textContent = 'Не удалось отправить. Проверьте интернет и попробуйте ещё раз.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Отправить ответ';
+  }
+});
+
+$('#rsvpEdit').addEventListener('click', () => {
+  done.hidden = true;
+  form.hidden = false;
+  form.elements.name.focus();
+});
+
+// Floating reminder: shown after the hero, hidden while the form is on screen or once answered
+let rsvpInView = false;
+function updateNudge() {
+  nudge.hidden = !!remembered() || rsvpInView || document.body.classList.contains('locked') || scrollY < innerHeight * 0.6;
+}
+new IntersectionObserver(([e]) => { rsvpInView = e.isIntersecting; updateNudge(); }).observe($('#rsvp'));
+addEventListener('scroll', updateNudge, { passive: true });
+
+const prev = remembered();
+if (prev) showDone(prev);
