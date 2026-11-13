@@ -149,11 +149,10 @@ img { display: block; max-width: 100%; }
     url(assets/paper.webp) 0 0 / 360px,
     var(--ivory);
   position: relative; overflow: hidden;
-  padding: 190px 24px;  /* equal sides keep content centred on screen; the 10px velvet strip sits inside the left padding */
+  padding: 40px 24px 190px;  /* equal sides keep content centred on screen; the 10px velvet strip sits inside the left padding */
 }
 .paper > section, .paper > figure { position: relative; z-index: 1; max-width: 520px; margin-inline: auto; }
 .corner { position: absolute; z-index: 0; width: min(60vw, 320px); pointer-events: none; }
-.corner-top { top: -14px; left: 4px; }
 .corner-bottom { bottom: -10px; right: -6px; }
 section { text-align: center; }
 .greeting, .date, .venue { padding: 64px 0; }
