@@ -28,8 +28,6 @@ document.querySelectorAll('[data-c]').forEach((el) => {
   if (v) el.textContent = v; else el.remove();
 });
 
-const guest = new URLSearchParams(location.search).get('to');
-if (guest) $('#guest').textContent = guest.slice(0, 60);
 
 // Greeting: one span per word so each can light up as it scrolls in
 const verse = $('#verse');
