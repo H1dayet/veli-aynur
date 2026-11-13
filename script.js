@@ -45,9 +45,12 @@ document.querySelectorAll('.hangers').forEach((box) => {
   for (let i = 0; i < n; i++) {
     const h = document.createElement('span');
     h.className = 'hang';
-    const size = 18 + Math.random() * 22;
+    const size = 22 + Math.random() * 26;
     h.style.cssText = `left:${(i + 0.5) * (100 / n) + (Math.random() - 0.5) * 6}%;--len:${8 + Math.random() * 30}%;--size:${size}px;animation-delay:${-Math.random() * 6}s;animation-duration:${5 + Math.random() * 3}s`;
-    h.innerHTML = '<svg><use href="#flake"/></svg>';
+    const img = new Image();
+    img.src = `assets/flake-${1 + Math.floor(Math.random() * 6)}.webp`;
+    img.alt = '';
+    h.append(img);
     box.append(h);
   }
 });
@@ -81,7 +84,7 @@ function openInvite() {
   setTimeout(() => {
     document.body.classList.remove('locked');
     gate.remove();
-  }, rm ? 300 : 2600);
+  }, rm ? 300 : 3000);
   if (C.music) {   // the tap is the user gesture browsers require for audio
     audio.src = C.music;
     audio.volume = 0.7;
