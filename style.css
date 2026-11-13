@@ -44,11 +44,12 @@ img { display: block; max-width: 100%; }
 .open .curtain-l { transform: translateX(-104%); }
 .open .curtain-r { transform: translateX(104%) scaleX(-1); }
 
-.chandelier {
-  z-index: 4; top: 11svh; left: 50%; width: min(30vw, 170px); translate: -50% 0;
+.chandelier {   /* in the cover's flex column: takes the height left between swag and wreath, shrinks on short phones */
+  flex: 1 1 0; min-height: 0; max-height: 240px; width: 100%;
+  object-fit: contain; object-position: 50% 0;
+  margin-top: 20vw;   /* chain starts behind the swag */
   filter: drop-shadow(0 0 22px rgba(255, 214, 140, .55));
   animation: twinkle 4s ease-in-out infinite alternate;
-  transition: transform 1.8s var(--ease) .3s, opacity 1.2s .3s;
 }
 .swag {
   z-index: 5; top: 0; left: 50%; width: max(100%, 480px); translate: -50% 0;
@@ -57,7 +58,7 @@ img { display: block; max-width: 100%; }
   transition: transform 1.6s var(--ease) .5s;
 }
 .open .swag { transform: translateY(-110%); }
-.open .chandelier { transform: translateY(-60%); opacity: 0; }
+@media (max-height: 700px) { .chandelier { visibility: hidden; } }   /* iPhone SE etc.: only a sliver would show under the swag */
 @keyframes twinkle { from { filter: drop-shadow(0 0 16px rgba(255, 214, 140, .4)); } to { filter: drop-shadow(0 0 30px rgba(255, 220, 160, .75)); } }
 
 .glow {
@@ -68,15 +69,15 @@ img { display: block; max-width: 100%; }
 .open .glow { opacity: 0; }
 
 .cover {
-  position: absolute; inset: 0; z-index: 6;
+  position: absolute; inset: 0; z-index: 4;   /* under the swag so the chandelier chain hides behind it */
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-  gap: 12px; padding: 0 24px calc(7svh + env(safe-area-inset-bottom)); text-align: center; color: var(--ivory);
+  gap: min(12px, 1.4svh); padding: 0 24px calc(6svh + env(safe-area-inset-bottom)); text-align: center; color: var(--ivory);
   background: linear-gradient(transparent 45%, rgba(6, 14, 32, .55) 75%);
   transition: opacity .7s, transform .9s var(--ease);
 }
 .open .cover { opacity: 0; transform: scale(.94); pointer-events: none; }
 
-.monogram { position: relative; width: min(52vw, 210px); aspect-ratio: 1; display: grid; place-items: center; }
+.monogram { position: relative; width: min(52vw, 210px, 26svh); aspect-ratio: 1; display: grid; place-items: center; }
 .monogram img { position: absolute; inset: 0; width: 100%; height: 100%; }
 .monogram p {
   position: relative; font: clamp(2.6rem, 12vw, 3.4rem)/1 var(--script); color: var(--gold);
@@ -165,7 +166,7 @@ img { display: block; max-width: 100%; }
     url(assets/paper.webp) 0 0 / 360px,
     var(--ivory);
   position: relative; overflow: hidden;
-  padding: 190px 20px 190px 30px;
+  padding: 190px 24px;  /* equal sides keep content centred on screen; the 10px velvet strip sits inside the left padding */
 }
 .paper > section, .paper > figure { position: relative; z-index: 1; max-width: 520px; margin-inline: auto; }
 .corner { position: absolute; z-index: 0; width: min(60vw, 320px); pointer-events: none; }
@@ -246,7 +247,7 @@ section { text-align: center; }
 .closing-wreath { width: min(84vw, 360px); aspect-ratio: 1; margin: 0 auto; display: grid; place-items: center; }
 .closing-wreath img { position: absolute; inset: 0; width: 100%; height: 100%; }
 .closing-wreath div { position: relative; }
-.closing-fg { display: block; width: min(112%, 760px); max-width: none; margin: 18px auto 0; translate: 0 6%; }
+.closing-fg { display: block; width: min(112%, 760px); max-width: none; margin: 18px 0 0 50%; translate: -50% 6%; }  /* wider than its box: margin:auto would only overflow to the right */
 .closing .hangers { z-index: 2; }
 .thanks { font: clamp(3rem, 14vw, 3.8rem)/1 var(--script); color: var(--gold); text-shadow: 0 0 14px rgba(6, 14, 32, .9), 0 0 22px rgba(255, 215, 150, .35); }
 .sig { font: clamp(1.8rem, 8vw, 2.2rem)/1.3 var(--script); margin-top: 4px; text-shadow: 0 0 12px rgba(6, 14, 32, .9); }
