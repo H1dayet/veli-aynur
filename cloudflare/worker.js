@@ -2,6 +2,7 @@
 //   POST /veli-aynur/api/rsvp          → saves one answer to D1
 //   GET  /veli-aynur/<ADMIN_PATH>      → admin page (ADMIN_PATH is a Worker secret, so the link isn't in this public repo)
 //   GET  /veli-aynur/<ADMIN_PATH>.csv  → same data as CSV for Excel / Google Sheets
+//   POST /veli-aynur/<ADMIN_PATH>/delete (id=…) → deletes one answer, back to the admin page
 // Everything else is a static file from ./site.
 const PREFIX = '/veli-aynur';
 const CORS = { 'access-control-allow-origin': '*' };   // the GitHub Pages copy posts here too
@@ -22,12 +23,17 @@ export default {
     }
 
     const admin = env.ADMIN_PATH && `${PREFIX}/${env.ADMIN_PATH}`;
+    if (admin && pathname === `${admin}/delete` && request.method === 'POST') {
+      const id = parseInt((await request.formData()).get('id'), 10);
+      if (id > 0) await env.DB.prepare('DELETE FROM rsvp WHERE id = ?').bind(id).run();
+      return Response.redirect(new URL(admin, request.url).href, 303);   // 303: reload the page with GET, no resubmit
+    }
     if (admin && (pathname === admin || pathname === `${admin}.csv`)) {
       const { results } = await env.DB.prepare('SELECT * FROM rsvp ORDER BY id DESC').all();
       const headers = { 'cache-control': 'no-store', 'x-robots-tag': 'noindex' };
       return pathname.endsWith('.csv')
         ? new Response(toCsv(results), { headers: { ...headers, 'content-type': 'text/csv; charset=utf-8', 'content-disposition': 'attachment; filename="veli-aynur-rsvp.csv"' } })
-        : new Response(adminPage(results, `${admin}.csv`), { headers: { ...headers, 'content-type': 'text/html; charset=utf-8' } });
+        : new Response(adminPage(results, `${admin}.csv`, `${admin}/delete`), { headers: { ...headers, 'content-type': 'text/html; charset=utf-8' } });
     }
 
     return env.ASSETS.fetch(request);
@@ -64,7 +70,7 @@ function toCsv(rows) {
   return '﻿' + lines.join('\r\n');   // BOM + ";" so Excel opens Cyrillic correctly
 }
 
-function adminPage(rows, csvHref) {
+function adminPage(rows, csvHref, deleteHref) {
   const all = latestPerGuest(rows);
   const cur = all.filter((r) => r.current);
   const yes = cur.filter((r) => r.attending);
@@ -75,7 +81,8 @@ function adminPage(rows, csvHref) {
     <td>${esc(r.name)}${r.current ? '' : ' <small>(старый ответ)</small>'}</td>
     <td>${r.attending ? 'Придёт' : 'Не сможет'}</td>
     <td>${r.attending ? r.guests : '—'}</td>
-    <td>${esc(r.comment) || ''}</td></tr>`;
+    <td>${esc(r.comment) || ''}</td>
+    <td><form method="post" action="${esc(deleteHref)}" data-name="${esc(r.name)}"><input type="hidden" name="id" value="${r.id}"><button class="del" title="Удалить">Удалить</button></form></td></tr>`;
   return `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
 <title>Ответы гостей · Вели &amp; Айнур</title>
@@ -92,13 +99,15 @@ function adminPage(rows, csvHref) {
   .bar { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 10px; }
   a.btn { background: var(--navy); color: #fff; text-decoration: none; padding: 9px 16px; border-radius: 999px; font-size: .9rem; }
   .wrap { overflow-x: auto; background: #fff; border: 1px solid #e3dccb; border-radius: 10px; }
-  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: .92rem; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: .92rem; }
   th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eee7d8; vertical-align: top; }
   th { background: #faf7f0; font-weight: 600; color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
   tr.yes td:nth-child(3) { color: #2f7a4b; font-weight: 600; }
   tr.no td:nth-child(3) { color: #a33a3a; font-weight: 600; }
   tr.old td { opacity: .45; }
   td:nth-child(5) { max-width: 320px; white-space: pre-wrap; }
+  button.del { background: none; border: 1px solid #d9b3b3; color: #a33a3a; border-radius: 999px; padding: 4px 12px; font: inherit; font-size: .82rem; cursor: pointer; }
+  button.del:hover { background: #a33a3a; color: #fff; }
   .empty { padding: 28px; text-align: center; color: var(--muted); }
 </style></head><body>
 <h1>Ответы гостей</h1>
@@ -111,9 +120,15 @@ function adminPage(rows, csvHref) {
 </div>
 <div class="bar"><span class="sub" style="margin:0">Если гость ответил несколько раз, считается последний ответ.</span><a class="btn" href="${esc(csvHref)}">Скачать CSV</a></div>
 <div class="wrap">${all.length
-    ? `<table><thead><tr><th>Когда</th><th>Имя</th><th>Ответ</th><th>Гостей</th><th>Комментарий</th></tr></thead><tbody>${all.map(tr).join('')}</tbody></table>`
+    ? `<table><thead><tr><th>Когда</th><th>Имя</th><th>Ответ</th><th>Гостей</th><th>Комментарий</th><th></th></tr></thead><tbody>${all.map(tr).join('')}</tbody></table>`
     : '<p class="empty">Пока никто не ответил.</p>'}</div>
 <script>
+  // deleting is permanent, so ask first
+  for (const f of document.querySelectorAll('form[data-name]')) {
+    f.addEventListener('submit', (e) => {
+      if (!confirm('Удалить ответ «' + f.dataset.name + '»? Это нельзя отменить.')) e.preventDefault();
+    });
+  }
   // show times in the viewer's own timezone
   for (const t of document.querySelectorAll('time')) {
     t.textContent = new Date(t.dateTime).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
