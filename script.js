@@ -28,6 +28,35 @@ document.querySelectorAll('[data-c]').forEach((el) => {
   if (v) el.textContent = v; else el.remove();
 });
 
+// Great Vibes draws «А» like an oversized lowercase a; take a word-initial А from Pinyon Script
+// (Latin A: same letter, Pinyon has no Cyrillic). Screen readers get the original text via aria-label.
+document.querySelectorAll('.names > span, .cover-names, .monogram span, .closing-mono span').forEach((el) => {
+  const parts = el.textContent.split(/(?<=^|\s)А/);
+  if (parts.length < 2) return;
+  el.setAttribute('aria-label', el.textContent);
+  el.replaceChildren(...parts.flatMap((p, i) => {
+    if (!i) return [p];
+    const c = document.createElement('span');
+    c.className = 'cap';
+    c.ariaHidden = 'true';
+    c.textContent = 'A';
+    return [c, p];
+  }));
+});
+
+// ---- Evening program ----
+const programEl = $('#program');
+(C.program || []).forEach((item) => {
+  const li = document.createElement('li');
+  const time = document.createElement('time');
+  time.textContent = item.time;
+  const title = document.createElement('span');
+  title.textContent = item.title;
+  li.append(time, title);
+  programEl.append(li);
+});
+if (!programEl.children.length) programEl.closest('section').remove();
+
 
 // Greeting: one span per word so each can light up as it scrolls in
 const verse = $('#verse');
@@ -98,10 +127,12 @@ audio.addEventListener('play', () => { musicBtn.classList.add('playing'); musicB
 audio.addEventListener('pause', () => { musicBtn.classList.remove('playing'); musicBtn.ariaLabel = 'Включить музыку'; });
 
 // ---- Reveal on scroll ----
-const io = new IntersectionObserver((es) => es.forEach((e) => {
-  if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-}), { threshold: 0.25 });
-document.querySelectorAll('.greeting, .frame, .date, .venue, .closing').forEach((el) => io.observe(el));
+const io = new IntersectionObserver((es) => es.filter((e) => e.isIntersecting).forEach((e, k) => {
+  e.target.style.transitionDelay = `${k * 0.18}s`;   // several entering at once still appear one after another
+  e.target.classList.add('in');
+  io.unobserve(e.target);
+}), { threshold: 0.25, rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.greeting, .frame, .date, .venue, .program, .timeline li, .closing').forEach((el) => io.observe(el));
 
 // ---- Calendar (month of the wedding, Monday first) ----
 const firstDow = (new Date(Date.UTC(y, mo - 1, 1)).getUTCDay() + 6) % 7;

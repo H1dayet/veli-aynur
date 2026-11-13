@@ -21,14 +21,12 @@
 <link rel="icon" href="assets/flake-2.webp" type="image/webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Pinyon+Script&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/curtain.webp">
-<link rel="preload" as="image" href="assets/swag.webp">
 <link rel="preload" as="image" href="assets/wreath.webp">
-<link rel="preload" as="image" href="assets/chandelier.webp">
 <link rel="preload" as="image" href="assets/ballroom.webp">
 <link rel="preload" as="image" href="assets/hero.webp">
-<link rel="stylesheet" href="style.css?v=9"><!-- bump ?v= on every change so phones skip their cached copy -->
+<link rel="stylesheet" href="style.css?v=10"><!-- bump ?v= on every change so phones skip their cached copy -->
 
 <script>
 // ===== EDIT ONLY THIS BLOCK =====
@@ -40,6 +38,13 @@ const CONFIG = {
   greeting: 'Два сердца, одна судьба. С огромной радостью приглашаем вас разделить с нами самый счастливый день — день, когда начинается наша семья.',
   events: [
     { title: 'Свадебное торжество', time: '18:00', place: 'Ресторан «Гуль земин»', address: 'Большой зал «Алтын»' },
+  ],
+  program: [                            // evening program, shown under «Где и когда»
+    { time: '18:00', title: 'Сбор гостей' },
+    { time: '18:30', title: 'Торжественный выход молодожёнов' },
+    { time: '19:00', title: 'Начало праздничной программы' },
+    { time: '21:00', title: 'Свадебный торт' },
+    { time: '22:30', title: 'Завершение вечера' },
   ],
   mapQuery: '',  // Google Maps search text or "lat,lng" (not shown to guests); '' hides the map. Google doesn't find «Гуль земин» by name.
   closing: 'Ваше присутствие — самый ценный подарок для нас. С нетерпением ждём встречи с вами в этот зимний вечер!',
@@ -56,10 +61,8 @@ const CONFIG = {
   <img class="curtain curtain-r" src="assets/curtain.webp" alt="">
   <div class="glow" aria-hidden="true"></div>
   <div class="hangers" data-hang="7" aria-hidden="true"></div>
-  <img class="swag" src="assets/swag.webp" alt="">
 
   <div class="cover">
-    <img class="chandelier" src="assets/chandelier.webp" alt="">
     <div class="monogram">
       <img src="assets/wreath.webp" alt="">
       <p><span data-c="g0"></span><i>&amp;</i><span data-c="b0"></span></p>
@@ -99,7 +102,7 @@ const CONFIG = {
     </section>
 
     <figure class="frame tilt-l">
-      <img src="assets/photo-1.webp" alt="Вели и Айнур на набережной у мечети Ортакёй" loading="lazy" width="900" height="1350">
+      <img src="assets/photo-1.webp" alt="Айнур оборачивается, держа Вели за руку" loading="lazy" width="900" height="1350">
       <figcaption>Вместе — навсегда</figcaption>
     </figure>
 
@@ -120,16 +123,21 @@ const CONFIG = {
 
     <!-- Venue -->
     <section class="venue">
-      <img class="spray" src="assets/florals-spray.webp" alt="" loading="lazy">
-      <h2 class="title">Когда и где</h2>
+      <h2 class="title">Где и когда</h2>
       <p class="v-day" data-c="dateLong"></p>
       <div id="events"></div>
       <div class="map"><iframe id="map" title="Карта места проведения" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
       <a class="btn dark" id="directions" target="_blank" rel="noopener">Построить маршрут</a>
     </section>
 
+    <!-- Evening program: each line reveals as it scrolls in -->
+    <section class="program">
+      <h2 class="title">Программа вечера</h2>
+      <ol class="timeline" id="program"></ol>
+    </section>
+
     <figure class="frame tilt-r">
-      <img src="assets/photo-2.webp" alt="Айнур оборачивается, держа Вели за руку" loading="lazy" width="900" height="1350">
+      <img src="assets/photo-2.webp" alt="Вели и Айнур на набережной у мечети Ортакёй" loading="lazy" width="900" height="1350">
       <figcaption>До встречи на нашем празднике</figcaption>
     </figure>
   </div>
@@ -140,13 +148,9 @@ const CONFIG = {
     <div class="hangers" data-hang="5" aria-hidden="true"></div>
     <div class="closing-wreath">
       <img src="assets/wreath.webp" alt="" loading="lazy">
-      <div>
-        <p class="thanks">Спасибо</p>
-        <p class="sig" data-c="couple"></p>
-      </div>
+      <p class="closing-mono"><span data-c="g0"></span><i>&amp;</i><span data-c="b0"></span></p>
     </div>
     <p class="closing-note" data-c="closing"></p>
-    <img class="closing-fg" src="assets/foreground.webp" alt="" loading="lazy">
   </section>
   <footer><span data-c="initials"></span> · <span data-c="dateDots"></span></footer>
 </main>
@@ -156,6 +160,6 @@ const CONFIG = {
 </button>
 <audio id="audio" loop preload="none"></audio>
 
-<script src="script.js?v=9"></script>
+<script src="script.js?v=10"></script>
 </body>
 </html>
