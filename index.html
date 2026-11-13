@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a1730">
+<title>Вели &amp; Айнур</title>
+<meta property="og:title" content="Вели &amp; Айнур · 04.12.2026">
+<meta property="og:description" content="Приглашаем вас на нашу свадьбу.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/hero.webp">
+<link rel="stylesheet" href="style.css?v=2"><!-- bump ?v= on every change so phones skip their cached copy -->
+
+<script>
+// ===== EDIT ONLY THIS BLOCK =====
+const CONFIG = {
+  groom: 'Вели',
+  bride: 'Айнур',
+  date: '2026-12-04T18:00:00+05:00',   // ISO, with the venue's timezone offset
+  timeZone: 'Asia/Ashgabat',
+  greeting: 'Два сердца, одна судьба. С огромной радостью приглашаем вас разделить с нами самый счастливый день — день, когда начинается наша семья.',
+  events: [
+    { title: 'Свадебное торжество', time: '18:00', place: '«Гуль Земин»', address: 'Ресторан «Алтын», большой зал' },
+  ],
+  mapQuery: '',  // Google Maps search text or "lat,lng" (not shown to guests); '' hides the map. Google doesn't find «Гуль Земин» by name.
+  closing: 'Ваше присутствие — самый ценный подарок для нас. С нетерпением ждём встречи с вами в этот зимний вечер!',
+  music: 'assets/music.mp3',            // '' for no music
+};
+</script>
+</head>
+<body class="locked">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="flake" viewBox="-50 -50 100 100">
+    <g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round">
+      <g id="arm"><path d="M0 0V-46M0-31l-10-10M0-31l10-10M0-17l-8-8M0-17l8-8"/></g>
+      <use href="#arm" transform="rotate(60)"/><use href="#arm" transform="rotate(120)"/>
+      <use href="#arm" transform="rotate(180)"/><use href="#arm" transform="rotate(240)"/><use href="#arm" transform="rotate(300)"/>
+      <circle r="5"/>
+    </g>
+  </symbol>
+</svg>
+
+<!-- ===== Cover: velvet curtains ===== -->
+<div class="gate" id="gate">
+  <div class="curtain curtain-l"></div>
+  <div class="curtain curtain-r"></div>
+  <div class="valance"></div>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="hangers" data-hang="9" aria-hidden="true"></div>
+
+  <div class="cover">
+    <div class="monogram">
+      <span data-c="g0"></span><i>&amp;</i><span data-c="b0"></span>
+    </div>
+    <p class="cover-names" data-c="couple"></p>
+    <p class="cover-date" data-c="dateDots"></p>
+    <p class="cover-to"><strong id="guest">Дорогие гости</strong>приглашаем вас на нашу свадьбу</p>
+    <button class="btn" id="open">Открыть приглашение</button>
+  </div>
+</div>
+
+<div class="snow" aria-hidden="true"></div>
+
+<main>
+  <!-- Hero: the couple -->
+  <section class="hero">
+    <img class="hero-img" src="assets/hero.webp" alt="Вели и Айнур держатся за руки на набережной Босфора">
+    <div class="hangers" data-hang="6" aria-hidden="true"></div>
+    <div class="hero-text">
+      <p class="kicker">Свадебное торжество</p>
+      <h1 class="names">
+        <span data-c="groom"></span>
+        <span class="amp">&amp;</span>
+        <span data-c="bride"></span>
+      </h1>
+      <p class="hero-date" data-c="dateLong"></p>
+    </div>
+    <span class="scroll-line" aria-hidden="true"></span>
+  </section>
+
+  <div class="paper">
+    <!-- Greeting -->
+    <section class="greeting">
+      <svg class="flake-mark" aria-hidden="true"><use href="#flake"/></svg>
+      <p class="verse" id="verse" data-c="greeting"></p>
+    </section>
+
+    <figure class="frame tilt-l">
+      <img src="assets/photo-1.webp" alt="Вели и Айнур на набережной у мечети Ортакёй" loading="lazy" width="900" height="1350">
+      <figcaption>Вместе — навсегда</figcaption>
+    </figure>
+
+    <!-- Date -->
+    <section class="date">
+      <h2 class="title">Сохраните дату</h2>
+      <div class="cal">
+        <p class="cal-head" data-c="monthYear"></p>
+        <div class="cal-grid" id="cal"></div>
+      </div>
+      <div class="timer" id="timer" aria-live="off">
+        <div><b id="d">0</b><span>дней</span></div>
+        <div><b id="h">00</b><span>часов</span></div>
+        <div><b id="m">00</b><span>минут</span></div>
+        <div><b id="s">00</b><span>секунд</span></div>
+      </div>
+    </section>
+
+    <!-- Venue -->
+    <section class="venue">
+      <h2 class="title">Когда и где</h2>
+      <p class="v-day" data-c="dateLong"></p>
+      <div id="events"></div>
+      <div class="map"><iframe id="map" title="Карта места проведения" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      <a class="btn dark" id="directions" target="_blank" rel="noopener">Построить маршрут</a>
+    </section>
+
+    <figure class="frame tilt-r">
+      <img src="assets/photo-2.webp" alt="Айнур оборачивается, держа Вели за руку" loading="lazy" width="900" height="1350">
+      <figcaption>До встречи на нашем празднике</figcaption>
+    </figure>
+  </div>
+
+  <!-- Closing: back into the winter night -->
+  <section class="closing">
+    <div class="hangers" data-hang="7" aria-hidden="true"></div>
+    <p class="thanks">Спасибо</p>
+    <p class="sig" data-c="couple"></p>
+    <p class="closing-note" data-c="closing"></p>
+  </section>
+  <footer><span data-c="initials"></span> · <span data-c="dateDots"></span></footer>
+</main>
+
+<button class="music" id="music" aria-label="Выключить музыку" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13M9 18a3 3 0 1 1-3-3 3 3 0 0 1 3 3Zm11-2a3 3 0 1 1-3-3 3 3 0 0 1 3 3Z"/></svg>
+</button>
+<audio id="audio" loop preload="none"></audio>
+
+<script src="script.js?v=2"></script>
+</body>
+</html>
