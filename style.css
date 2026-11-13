@@ -101,7 +101,6 @@ img { display: block; max-width: 100%; }
   position: absolute; left: 0; bottom: 0; width: var(--size); height: var(--size);
   filter: drop-shadow(0 0 6px rgba(200, 225, 255, .7));
 }
-.hero .hang { height: calc(var(--len) * .55); }
 @keyframes sway { from { rotate: -4deg; } to { rotate: 4deg; } }
 
 /* ===== Falling snow ===== */
