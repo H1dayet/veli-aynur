@@ -132,7 +132,7 @@ const io = new IntersectionObserver((es) => es.filter((e) => e.isIntersecting).f
   e.target.classList.add('in');
   io.unobserve(e.target);
 }), { threshold: 0.25, rootMargin: '0px 0px -8% 0px' });
-document.querySelectorAll('.greeting, .frame, .date, .venue, .program, .timeline li, .closing').forEach((el) => io.observe(el));
+document.querySelectorAll('.greeting, .frame, .date, .venue, .program, .timeline li, .photos, .closing').forEach((el) => io.observe(el));
 
 // ---- Calendar (month of the wedding, Monday first) ----
 const firstDow = (new Date(Date.UTC(y, mo - 1, 1)).getUTCDay() + 6) % 7;

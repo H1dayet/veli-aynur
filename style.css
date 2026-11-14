@@ -225,8 +225,14 @@ section { text-align: center; }
 .timeline time { font-size: 1.35rem; font-weight: 600; color: var(--gold-deep); text-align: right; font-variant-numeric: tabular-nums; }
 .timeline span { font-size: 1.2rem; line-height: 1.35; }
 
-.date, .venue, .greeting { opacity: 0; transform: translateY(24px); transition: opacity 1s, transform 1.2s var(--ease); }
-.date.in, .venue.in, .greeting.in { opacity: 1; transform: none; }
+/* Photos & videos: link to the guests' Telegram chat */
+.photos { padding: 8px 0 72px; }
+.photos .title { margin-bottom: 4px; }
+.photos-sub { letter-spacing: .24em; text-transform: uppercase; font-size: .85rem; font-weight: 600; color: var(--gold-deep); margin-bottom: 20px; }
+.photos-text { font-size: 1.2rem; line-height: 1.55; max-width: 440px; margin: 0 auto 26px; }
+
+.date, .venue, .greeting, .photos { opacity: 0; transform: translateY(24px); transition: opacity 1s, transform 1.2s var(--ease); }
+.date.in, .venue.in, .greeting.in, .photos.in { opacity: 1; transform: none; }
 
 /* ===== Closing ===== */
 .closing {
